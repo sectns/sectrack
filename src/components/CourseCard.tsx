@@ -5,6 +5,7 @@ import { AlertTriangle, Calendar, Settings } from 'lucide-react';
 import HealthScoreRing from './HealthScoreRing';
 import AddAttendanceModal from './AddAttendanceModal';
 import EditCourseModal from './EditCourseModal';
+import Button from './ui/Button';
 
 interface CourseCardProps {
     course: Course;
@@ -84,40 +85,43 @@ export default function CourseCard({
 
     return (
         <>
-            <div className="card-glass group">
+            <div className="card-glass group hover:shadow-2xl hover:shadow-emerald-900/10 border-white/5">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-8">
                     <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-3 mb-3">
                             {course.course_code && (
                                 <span
-                                    className="px-3 py-1 rounded-full text-xs font-bold"
+                                    className="px-3 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase border"
                                     style={{
-                                        backgroundColor: `${course.color_code}20`,
+                                        backgroundColor: `${course.color_code}15`,
                                         color: course.color_code,
-                                        border: `1px solid ${course.color_code}40`
+                                        borderColor: `${course.color_code}30`
                                     }}
                                 >
                                     {course.course_code}
                                 </span>
                             )}
                             {calculation.is_critical && (
-                                <span className="badge badge-absent flex items-center gap-1">
-                                    <AlertTriangle className="w-3 h-3" />
+                                <span className="badge badge-absent flex items-center gap-1.5 py-1 px-3 text-[10px] font-bold">
+                                    <AlertTriangle className="w-3.5 h-3.5" />
                                     KRİTİK
                                 </span>
                             )}
                         </div>
-                        <h3 className="text-lg font-bold text-white mb-1">
+                        <h3 className="text-xl font-extrabold text-white mb-2 leading-tight tracking-tight group-hover:text-emerald-400 transition-colors">
                             {course.name}
                         </h3>
-                        <div className="flex items-center gap-3 text-sm text-slate-400">
-                            <span>Teorik: {course.t_hours} saat</span>
+                        <div className="flex items-center gap-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            <span className="flex items-center gap-1.5 italic">
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 opacity-50" />
+                                Teorik: {course.t_hours}s
+                            </span>
                             {course.u_hours > 0 && (
-                                <>
-                                    <span>•</span>
-                                    <span>Uygulama: {course.u_hours} saat</span>
-                                </>
+                                <span className="flex items-center gap-1.5 italic">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-50" />
+                                    Uygulama: {course.u_hours}s
+                                </span>
                             )}
                         </div>
                     </div>
@@ -125,10 +129,10 @@ export default function CourseCard({
                     {/* Settings Button */}
                     <button
                         onClick={() => setShowEditModal(true)}
-                        className="w-10 h-10 rounded-full bg-slate-800/50 hover:bg-slate-800 flex items-center justify-center transition-all"
+                        className="w-12 h-12 rounded-2xl bg-slate-800/20 hover:bg-slate-800/60 flex items-center justify-center transition-all border border-white/5 hover:border-white/10 group/settings"
                         title="Ders Ayarları"
                     >
-                        <Settings className="w-5 h-5 text-slate-400" />
+                        <Settings className="w-5 h-5 text-slate-500 group-hover/settings:text-white group-hover/settings:rotate-90 transition-all duration-300" />
                     </button>
                 </div>
 
@@ -184,24 +188,32 @@ export default function CourseCard({
                 </div>
 
                 {/* Total Absence Summary */}
-                <div className="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                <div className="mt-4 p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-300">Toplam Devamsızlık</span>
-                        <span className="text-lg font-bold text-emerald-400">
-                            {calculation.t_current_absent_hours + calculation.u_current_absent_hours} Saat
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] font-bold text-emerald-500/70 uppercase tracking-widest mb-1">Toplam Devamsızlık</span>
+                            <span className="text-2xl font-black text-emerald-400 tracking-tight leading-none">
+                                {calculation.t_current_absent_hours + calculation.u_current_absent_hours} <span className="text-xs font-bold opacity-60 ml-0.5">Saat</span>
+                            </span>
+                        </div>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                            <Calendar className="w-6 h-6 text-emerald-400/60" />
+                        </div>
                     </div>
                 </div>
 
                 {/* Actions */}
-                <div className="mt-6">
-                    <button
+                <div className="mt-8">
+                    <Button
+                        variant="primary"
+                        fullWidth
+                        size="lg"
+                        icon={Calendar}
                         onClick={() => setShowAttendanceModal(true)}
-                        className="w-full btn-primary flex items-center justify-center gap-2"
+                        className="h-14 rounded-2xl shadow-lg shadow-emerald-900/40"
                     >
-                        <Calendar className="w-5 h-5" />
                         Yoklama Ekle
-                    </button>
+                    </Button>
                 </div>
             </div>
 

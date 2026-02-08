@@ -1,12 +1,23 @@
 import { useState } from 'react';
 import { CourseFormData } from '@/types';
-import { X, Save } from 'lucide-react';
+import { X, Save, Check } from 'lucide-react';
+import Input from './ui/Input';
+import Button from './ui/Button';
 
 interface CourseFormProps {
     onSubmit: (data: CourseFormData) => Promise<void>;
     onCancel: () => void;
     initialData?: CourseFormData;
 }
+
+const PRESET_COLORS = [
+    '#10b981', // Emerald
+    '#3b82f6', // Blue
+    '#8b5cf6', // Purple
+    '#f59e0b', // Orange
+    '#ec4899', // Pink
+    '#ef4444', // Red
+];
 
 export default function CourseForm({ onSubmit, onCancel, initialData }: CourseFormProps) {
     const [formData, setFormData] = useState<CourseFormData>(
@@ -17,7 +28,7 @@ export default function CourseForm({ onSubmit, onCancel, initialData }: CourseFo
             u_hours: 0,
             t_limit_percent: 30,
             u_limit_percent: 20,
-            color_code: '#00ff41'
+            color_code: '#10b981'
         }
     );
     const [loading, setLoading] = useState(false);
@@ -46,185 +57,156 @@ export default function CourseForm({ onSubmit, onCancel, initialData }: CourseFo
     };
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="card-cyber max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
+            <div className="bg-slate-900/90 backdrop-blur-xl max-w-lg w-full rounded-3xl border border-white/10 shadow-2xl overflow-hidden animate-slide-up">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-matrix-green/30">
-                    <h2 className="text-xl font-mono text-matrix-green">
-                        &gt; {initialData ? 'DERS DÜZENLE' : 'YENİ DERS EKLE'}
-                    </h2>
+                <div className="flex items-center justify-between p-6 border-b border-white/5">
+                    <div>
+                        <h2 className="text-xl font-bold text-white tracking-tight">
+                            {initialData ? 'Dersi Düzenle' : 'Yeni Ders Ekle'}
+                        </h2>
+                        <p className="text-xs text-slate-400 font-medium mt-1">
+                            Ders bilgilerini ve devamsızlık limitlerini ayarla
+                        </p>
+                    </div>
                     <button
                         onClick={onCancel}
-                        className="p-2 hover:bg-matrix-green/10 rounded transition-colors"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white transition-all border border-white/5"
                     >
-                        <X className="w-5 h-5 text-matrix-green" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Course Name */}
-                    <div>
-                        <label className="block text-matrix-green font-mono text-sm mb-2">
-                            DERS ADI *
-                        </label>
-                        <input
-                            type="text"
+                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                    {/* Course Identity */}
+                    <div className="space-y-4">
+                        <Input
+                            label="Ders Adı"
+                            placeholder="örn: Veri Yapıları"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="input-cyber"
-                            placeholder="örn: Veri Yapıları"
                             required
                         />
-                    </div>
-
-                    {/* Course Code */}
-                    <div>
-                        <label className="block text-matrix-green font-mono text-sm mb-2">
-                            DERS KODU (Opsiyonel)
-                        </label>
-                        <input
-                            type="text"
-                            value={formData.course_code}
-                            onChange={(e) => setFormData({ ...formData, course_code: e.target.value })}
-                            className="input-cyber"
+                        <Input
+                            label="Ders Kodu (Opsiyonel)"
                             placeholder="örn: YZM202"
+                            value={formData.course_code || ''}
+                            onChange={(e) => setFormData({ ...formData, course_code: e.target.value })}
                         />
                     </div>
 
                     {/* Hours Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Theory Hours */}
-                        <div>
-                            <label className="block text-matrix-green font-mono text-sm mb-2">
-                                TEORİK SAAT (T) *
-                            </label>
-                            <input
-                                type="number"
-                                min="0"
-                                max="10"
-                                value={formData.t_hours}
-                                onChange={(e) => setFormData({ ...formData, t_hours: parseInt(e.target.value) || 0 })}
-                                className="input-cyber"
-                                placeholder="0"
-                            />
-                            <p className="text-matrix-green/50 text-xs font-mono mt-1">
-                                Haftalık teorik ders saati
-                            </p>
-                        </div>
-
-                        {/* Practice Hours */}
-                        <div>
-                            <label className="block text-matrix-green font-mono text-sm mb-2">
-                                UYGULAMA SAAT (U) *
-                            </label>
-                            <input
-                                type="number"
-                                min="0"
-                                max="10"
-                                value={formData.u_hours}
-                                onChange={(e) => setFormData({ ...formData, u_hours: parseInt(e.target.value) || 0 })}
-                                className="input-cyber"
-                                placeholder="0"
-                            />
-                            <p className="text-matrix-green/50 text-xs font-mono mt-1">
-                                Haftalık uygulama ders saati
-                            </p>
-                        </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <Input
+                            type="number"
+                            label="Teorik Saat (T)"
+                            placeholder="0"
+                            min="0"
+                            max="20"
+                            value={formData.t_hours}
+                            onChange={(e) => setFormData({ ...formData, t_hours: parseInt(e.target.value) || 0 })}
+                            helperText="Haftalık T saati"
+                        />
+                        <Input
+                            type="number"
+                            label="Uygulama Saat (U)"
+                            placeholder="0"
+                            min="0"
+                            max="20"
+                            value={formData.u_hours}
+                            onChange={(e) => setFormData({ ...formData, u_hours: parseInt(e.target.value) || 0 })}
+                            helperText="Haftalık U saati"
+                        />
                     </div>
 
-                    {/* Limits */}
-                    <div className="border border-matrix-green/30 rounded p-4">
-                        <h3 className="text-matrix-green font-mono text-sm mb-4">
-                            DEVAMSIZLIK LİMİTLERİ
+                    {/* Limits Grid */}
+                    <div className="p-4 rounded-2xl bg-slate-950/50 border border-white/5 space-y-4">
+                        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                            Devamsızlık Limitleri (%)
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Theory Limit */}
-                            <div>
-                                <label className="block text-matrix-green font-mono text-sm mb-2">
-                                    TEORİK LİMİT (%)
-                                </label>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    step="0.1"
-                                    value={formData.t_limit_percent}
-                                    onChange={(e) => setFormData({ ...formData, t_limit_percent: parseFloat(e.target.value) || 30 })}
-                                    className="input-cyber"
-                                />
-                                <p className="text-matrix-green/50 text-xs font-mono mt-1">
-                                    Varsayılan: %30
-                                </p>
-                            </div>
-
-                            {/* Practice Limit */}
-                            <div>
-                                <label className="block text-matrix-green font-mono text-sm mb-2">
-                                    UYGULAMA LİMİT (%)
-                                </label>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    step="0.1"
-                                    value={formData.u_limit_percent}
-                                    onChange={(e) => setFormData({ ...formData, u_limit_percent: parseFloat(e.target.value) || 20 })}
-                                    className="input-cyber"
-                                />
-                                <p className="text-matrix-green/50 text-xs font-mono mt-1">
-                                    Varsayılan: %20
-                                </p>
-                            </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <Input
+                                type="number"
+                                label="Teorik Limit"
+                                min="0"
+                                max="100"
+                                step="0.1"
+                                value={formData.t_limit_percent}
+                                onChange={(e) => setFormData({ ...formData, t_limit_percent: parseFloat(e.target.value) || 30 })}
+                            />
+                            <Input
+                                type="number"
+                                label="Uygulama Limit"
+                                min="0"
+                                max="100"
+                                step="0.1"
+                                value={formData.u_limit_percent}
+                                onChange={(e) => setFormData({ ...formData, u_limit_percent: parseFloat(e.target.value) || 20 })}
+                            />
                         </div>
                     </div>
 
-                    {/* Color Picker */}
-                    <div>
-                        <label className="block text-matrix-green font-mono text-sm mb-2">
-                            RENK KODU
+                    {/* Color Picker Swatches */}
+                    <div className="space-y-3">
+                        <label className="block text-sm font-semibold text-slate-300 tracking-tight">
+                            Ders Rengi
                         </label>
-                        <div className="flex gap-3">
-                            <input
-                                type="color"
-                                value={formData.color_code}
-                                onChange={(e) => setFormData({ ...formData, color_code: e.target.value })}
-                                className="h-12 w-20 bg-dark-gray border border-matrix-green/30 rounded cursor-pointer"
-                            />
-                            <input
-                                type="text"
-                                value={formData.color_code}
-                                onChange={(e) => setFormData({ ...formData, color_code: e.target.value })}
-                                className="input-cyber flex-1"
-                                placeholder="#00ff41"
-                            />
+                        <div className="flex flex-wrap gap-3">
+                            {PRESET_COLORS.map((color) => (
+                                <button
+                                    key={color}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, color_code: color })}
+                                    className={`
+                                        w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center
+                                        ${formData.color_code === color ? 'border-white scale-110 shadow-lg' : 'border-transparent hover:scale-105'}
+                                    `}
+                                    style={{ backgroundColor: color }}
+                                >
+                                    {formData.color_code === color && (
+                                        <Check className="w-5 h-5 text-white drop-shadow-md" />
+                                    )}
+                                </button>
+                            ))}
+                            {/* Manual Color Picker */}
+                            <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-slate-800 hover:border-slate-700 transition-all">
+                                <input
+                                    type="color"
+                                    value={formData.color_code}
+                                    onChange={(e) => setFormData({ ...formData, color_code: e.target.value })}
+                                    className="absolute inset-[-50%] w-[200%] h-[200%] cursor-pointer"
+                                />
+                            </div>
                         </div>
                     </div>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="bg-neon-red/10 border border-neon-red/50 rounded p-3">
-                            <p className="text-neon-red text-sm font-mono">{error}</p>
+                        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-shake">
+                            <p className="text-sm font-medium text-red-100">{error}</p>
                         </div>
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-3 pt-4">
-                        <button
+                    <div className="flex gap-4 pt-4 border-t border-white/5">
+                        <Button
                             type="button"
+                            variant="ghost"
+                            fullWidth
                             onClick={onCancel}
-                            className="flex-1 px-4 py-3 bg-gray-500/10 hover:bg-gray-500/20 border border-gray-500/30 rounded text-gray-400 font-mono transition-all"
                             disabled={loading}
                         >
-                            İPTAL
-                        </button>
-                        <button
+                            İptal
+                        </Button>
+                        <Button
                             type="submit"
-                            className="flex-1 btn-neon py-3 flex items-center justify-center gap-2"
-                            disabled={loading}
+                            variant="primary"
+                            fullWidth
+                            loading={loading}
+                            icon={Save}
                         >
-                            <Save className="w-4 h-4" />
-                            {loading ? 'KAYDEDILIYOR...' : 'KAYDET'}
-                        </button>
+                            {initialData ? 'Güncelle' : 'Kaydet'}
+                        </Button>
                     </div>
                 </form>
             </div>

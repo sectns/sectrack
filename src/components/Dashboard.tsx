@@ -6,10 +6,13 @@ import { useSemesterCalculations } from '@/hooks/useSemesterCalculations';
 import { LogOut, Plus, Settings as SettingsIcon, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import CourseCard from './CourseCard';
 import CourseForm from './CourseForm';
+import Button from './ui/Button';
 import SemesterSettingsModal from './SemesterSettingsModal';
 import MobileBottomNav from './MobileBottomNav';
 import { CourseFormData, AttendanceStatus, Profile, CourseType } from '@/types';
 import { format } from 'date-fns';
+import { tr } from 'date-fns/locale';
+
 
 
 interface DashboardProps {
@@ -254,28 +257,30 @@ export default function Dashboard({ user }: DashboardProps) {
         return (
             <>
                 {courses.length === 0 ? (
-                    <div className="text-center py-16">
-                        <div className="w-24 h-24 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+                    <div className="flex flex-col items-center justify-center py-20 px-6 animate-fade-in">
+                        <div className="w-24 h-24 rounded-3xl bg-emerald-500/10 flex items-center justify-center mb-8 glow-emerald">
                             <CalendarIcon className="w-12 h-12 text-emerald-400" />
                         </div>
-                        <h2 className="text-2xl font-bold text-white mb-4">
-                            Henüz Ders Eklenmedi
+                        <h2 className="text-3xl font-bold text-white mb-4 tracking-tight text-center">
+                            Takip Edilecek Ders Bulunamadı
                         </h2>
-                        <p className="text-slate-400 mb-8">
-                            Yoklama takibine başlamak için ilk dersini ekle
+                        <p className="text-slate-400 mb-10 text-center max-w-sm font-medium leading-relaxed">
+                            Henüz bir ders eklememişsin. İlk dersini ekleyerek devamsızlıklarını profesyonelce takip etmeye başla.
                         </p>
-                        <button
+                        <Button
                             onClick={() => setShowCourseForm(true)}
-                            className="btn-primary inline-flex items-center gap-2"
+                            variant="primary"
+                            size="lg"
+                            icon={Plus}
+                            className="h-14 px-10 rounded-2xl shadow-lg shadow-emerald-900/40"
                         >
-                            <Plus className="w-5 h-5" />
                             İlk Dersini Ekle
-                        </button>
+                        </Button>
                     </div>
                 ) : (
-                    <div className="space-y-6">
+                    <div className="space-y-10 animate-fade-in">
                         {/* Course Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                             {courses.map((course) => (
                                 <CourseCard
                                     key={course.id}
@@ -288,16 +293,16 @@ export default function Dashboard({ user }: DashboardProps) {
                                     onDeleteLog={handleDeleteLog}
                                 />
                             ))}
-                        </div>
 
-                        {/* Add Course Button */}
-                        <div className="text-center">
+                            {/* Add More Dashed Button */}
                             <button
                                 onClick={() => setShowCourseForm(true)}
-                                className="btn-secondary inline-flex items-center gap-2"
+                                className="flex flex-col items-center justify-center min-h-[300px] rounded-3xl border-2 border-dashed border-slate-800 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all group"
                             >
-                                <Plus className="w-5 h-5" />
-                                Yeni Ders Ekle
+                                <div className="w-14 h-14 rounded-full bg-slate-900 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <Plus className="w-6 h-6 text-slate-500 group-hover:text-emerald-400" />
+                                </div>
+                                <span className="text-slate-500 font-bold group-hover:text-emerald-400 transition-colors">Yeni Ders Ekle</span>
                             </button>
                         </div>
                     </div>
@@ -317,11 +322,11 @@ export default function Dashboard({ user }: DashboardProps) {
                                 <span className="text-lg font-bold text-white">ST</span>
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-white">
+                                <h1 className="text-2xl font-black text-white tracking-tighter">
                                     SecTrack
                                 </h1>
-                                <p className="text-xs text-slate-400">
-                                    {user.email}
+                                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest opacity-80">
+                                    Program Takip Sistemi
                                 </p>
                             </div>
                         </div>
@@ -356,7 +361,7 @@ export default function Dashboard({ user }: DashboardProps) {
                                                 Dönem Başlamadı
                                             </p>
                                             <p className="text-xs text-blue-400/70">
-                                                Kalan: {semester.daysUntilStart} gün ({format(new Date(profile.semester_start), 'dd MMMM yyyy')})
+                                                Kalan: {semester.daysUntilStart} gün ({format(new Date(profile.semester_start), 'dd MMMM yyyy', { locale: tr })})
                                             </p>
                                         </div>
                                     </div>

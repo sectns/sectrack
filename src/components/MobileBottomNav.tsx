@@ -1,4 +1,4 @@
-import { Home, Calendar, Settings } from 'lucide-react';
+import { Home, Settings } from 'lucide-react';
 
 interface MobileBottomNavProps {
     activeTab: 'dashboard' | 'schedule' | 'settings';
@@ -8,7 +8,6 @@ interface MobileBottomNavProps {
 export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottomNavProps) {
     const tabs = [
         { id: 'dashboard' as const, icon: Home, label: 'Ana Sayfa' },
-        { id: 'schedule' as const, icon: Calendar, label: 'Program' },
         { id: 'settings' as const, icon: Settings, label: 'Ayarlar' },
     ];
 
@@ -24,8 +23,8 @@ export default function MobileBottomNav({ activeTab, onTabChange }: MobileBottom
                             key={tab.id}
                             onClick={() => onTabChange(tab.id)}
                             className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${isActive
-                                    ? 'bg-emerald-500/20 text-emerald-400'
-                                    : 'text-slate-400 hover:text-slate-300'
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : 'text-slate-400 hover:text-slate-300'
                                 }`}
                         >
                             <Icon className={`w-5 h-5 ${isActive ? 'animate-pulse' : ''}`} />

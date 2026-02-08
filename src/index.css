@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @theme {
   /* Modern Emerald Dark Palette */
@@ -20,7 +21,7 @@
   --color-slate-700: #475569;
 
   /* Typography */
-  --font-family-sans: Inter, system-ui, sans-serif;
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-family-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
@@ -73,6 +74,7 @@
     border-color: rgb(52 211 153 / 0.3);
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+    cursor: pointer;
   }
 
   /* Modern Button Primary */
@@ -90,6 +92,7 @@
     background: linear-gradient(135deg, #059669 0%, #047857 100%);
     box-shadow: 0 6px 20px rgb(16 185 129 / 0.4);
     transform: translateY(-1px);
+    cursor: pointer;
   }
 
   .btn-primary:active {
@@ -110,6 +113,7 @@
   .btn-secondary:hover {
     background: rgb(52 211 153 / 0.2);
     border-color: rgb(52 211 153 / 0.5);
+    cursor: pointer;
   }
 
   /* Status Badges - Modern */
@@ -169,6 +173,10 @@
     color: rgb(148 163 184 / 0.5);
   }
 
+  button:hover {
+    cursor: pointer;
+  }
+
   /* Floating Action Button */
   .fab {
     position: fixed;
@@ -189,6 +197,7 @@
   .fab:hover {
     transform: scale(1.1);
     box-shadow: 0 12px 32px rgb(16 185 129 / 0.5);
+    cursor: pointer;
   }
 
   .fab:active {
@@ -319,7 +328,27 @@
     }
   }
 
+  /* Safe Area for Mobile */
+  .header-safe {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .nav-safe {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  /* Glass Navigation */
+  .nav-glass {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(24px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
   .animate-shake {
     animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
   }
+}
+
+.lucide-settings {
+  cursor: pointer;
 }

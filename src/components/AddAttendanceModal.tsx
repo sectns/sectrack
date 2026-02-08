@@ -3,6 +3,8 @@ import { X, Calendar as CalendarIcon, Save, XCircle, CheckCircle, PauseCircle } 
 import { Course, AttendanceStatus, CourseType } from '@/types';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
+import Input from './ui/Input';
+import Button from './ui/Button';
 
 interface AddAttendanceModalProps {
     isOpen: boolean;
@@ -73,212 +75,179 @@ export default function AddAttendanceModal({
             icon: XCircle,
             label: 'Gitmedim',
             description: 'Devamsızlık hakkından düşer',
-            bgColor: 'bg-red-500/10',
-            borderColor: 'border-red-500/30',
-            activeColor: 'border-red-500 bg-red-500/20',
-            iconColor: 'text-red-400',
-            glowColor: 'shadow-red-500/50'
+            activeStyles: 'border-red-500 bg-red-500/10 shadow-lg shadow-red-900/20',
+            inactiveStyles: 'border-white/5 bg-slate-950/30 hover:bg-slate-950/50',
+            iconColor: 'text-red-400'
         },
         {
             value: AttendanceStatus.CANCELLED,
             icon: PauseCircle,
             label: 'İptal/Tatil',
             description: 'Hakkı etkilemez',
-            bgColor: 'bg-slate-500/10',
-            borderColor: 'border-slate-500/30',
-            activeColor: 'border-slate-400 bg-slate-500/20',
-            iconColor: 'text-slate-400',
-            glowColor: 'shadow-slate-500/50'
+            activeStyles: 'border-slate-400 bg-slate-800/80 shadow-lg shadow-slate-900/20',
+            inactiveStyles: 'border-white/5 bg-slate-950/30 hover:bg-slate-950/50',
+            iconColor: 'text-slate-400'
         },
         {
             value: AttendanceStatus.PRESENT,
             icon: CheckCircle,
             label: 'Gittim',
             description: 'Kayıt için (opsiyonel)',
-            bgColor: 'bg-emerald-500/10',
-            borderColor: 'border-emerald-500/30',
-            activeColor: 'border-emerald-500 bg-emerald-500/20',
-            iconColor: 'text-emerald-400',
-            glowColor: 'shadow-emerald-500/50'
+            activeStyles: 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-900/20',
+            inactiveStyles: 'border-white/5 bg-slate-950/30 hover:bg-slate-950/50',
+            iconColor: 'text-emerald-400'
         }
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div className="glass-panel w-full md:max-w-lg md:rounded-3xl rounded-t-3xl rounded-b-none animate-slide-up max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in text-sans">
+            <div className="bg-slate-900/90 backdrop-blur-xl w-full md:max-w-xl md:rounded-3xl rounded-t-3xl border border-white/10 shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="sticky top-0 bg-slate-900/90 backdrop-blur-xl p-6 border-b border-slate-800 rounded-t-3xl">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center">
-                                <CalendarIcon className="w-6 h-6 text-emerald-400" />
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-bold text-white">
-                                    Yoklama Ekle
-                                </h2>
-                                <p className="text-sm text-slate-400">{course.name}</p>
-                            </div>
+                <div className="p-6 border-b border-white/5 flex items-center justify-between bg-slate-900/50">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                            <CalendarIcon className="w-6 h-6 text-emerald-400" />
                         </div>
-                        <button
-                            onClick={onClose}
-                            className="w-10 h-10 rounded-full hover:bg-slate-800 flex items-center justify-center transition-colors"
-                        >
-                            <X className="w-5 h-5 text-slate-400" />
-                        </button>
+                        <div>
+                            <h2 className="text-xl font-bold text-white tracking-tight">Yoklama Ekle</h2>
+                            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{course.name}</p>
+                        </div>
                     </div>
+                    <button
+                        onClick={onClose}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white transition-all border border-white/5"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    {/* Date */}
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-3">
-                            Tarih
-                        </label>
-                        <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            className="w-full h-12 px-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
-                            required
-                        />
-                        <p className="text-xs text-slate-500 mt-2">
-                            {format(new Date(date), 'dd MMMM yyyy, EEEE', { locale: tr })}
-                        </p>
-                    </div>
-
-                    {/* Type (if course has both T and U) */}
-                    {course.t_hours > 0 && course.u_hours > 0 && (
-                        <div>
-                            <label className="block text-sm font-semibold text-slate-300 mb-3">
-                                Tür
-                            </label>
-                            <div className="grid grid-cols-2 gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => handleTypeChange(CourseType.T)}
-                                    className={`h-12 px-4 rounded-xl font-semibold transition-all ${type === CourseType.T
-                                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 scale-105'
-                                            : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 border border-slate-700'
-                                        }`}
-                                >
-                                    Teorik
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => handleTypeChange(CourseType.U)}
-                                    className={`h-12 px-4 rounded-xl font-semibold transition-all ${type === CourseType.U
-                                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30 scale-105'
-                                            : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 border border-slate-700'
-                                        }`}
-                                >
-                                    Uygulama
-                                </button>
+                <div className="flex-1 overflow-y-auto">
+                    <form onSubmit={handleSubmit} className="p-6 space-y-8">
+                        {/* Date & Type Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-300 ml-1">Tarih</label>
+                                <Input
+                                    type="date"
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                    required
+                                />
+                                <p className="text-[10px] font-bold text-slate-500 ml-1 uppercase tracking-widest">
+                                    {format(new Date(date), 'dd MMMM yyyy, EEEE', { locale: tr })}
+                                </p>
                             </div>
+
+                            {course.t_hours > 0 && course.u_hours > 0 && (
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-slate-300 ml-1">Tür</label>
+                                    <div className="flex p-1 bg-slate-950/50 rounded-2xl border border-white/5">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleTypeChange(CourseType.T)}
+                                            className={`flex-1 h-10 rounded-xl text-sm font-bold transition-all ${type === CourseType.T
+                                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-900/30'
+                                                : 'text-slate-400 hover:text-slate-300'}`}
+                                        >
+                                            Teorik
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleTypeChange(CourseType.U)}
+                                            className={`flex-1 h-10 rounded-xl text-sm font-bold transition-all ${type === CourseType.U
+                                                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/30'
+                                                : 'text-slate-400 hover:text-slate-300'}`}
+                                        >
+                                            Uygulama
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    )}
 
-                    {/* Hours */}
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-3">
-                            Saat
-                        </label>
-                        <input
-                            type="number"
-                            min="1"
-                            max="10"
-                            value={hours}
-                            onChange={(e) => setHours(Number(e.target.value))}
-                            className="w-full h-12 px-4 rounded-xl bg-slate-800/50 border border-slate-700 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
-                            required
-                        />
-                        <p className="text-xs text-slate-500 mt-2">
-                            Varsayılan: {type === CourseType.T ? course.t_hours : course.u_hours} saat
-                        </p>
-                    </div>
+                        {/* Hours */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-300 ml-1">Ders Saati</label>
+                            <Input
+                                type="number"
+                                min="1"
+                                max="10"
+                                value={hours}
+                                onChange={(e) => setHours(Number(e.target.value))}
+                                required
+                                helperText={`Bugünkü ders saati (Varsayılan: ${type === CourseType.T ? course.t_hours : course.u_hours})`}
+                            />
+                        </div>
 
-                    {/* Status - Card Selection */}
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-300 mb-3">
-                            Durum
-                        </label>
-                        <div className="grid grid-cols-1 gap-3">
-                            {statusCards.map((card) => {
-                                const Icon = card.icon;
-                                const isActive = status === card.value;
+                        {/* Status Cards */}
+                        <div className="space-y-3">
+                            <label className="text-sm font-semibold text-slate-300 ml-1">Katılım Durumu</label>
+                            <div className="grid grid-cols-1 gap-3">
+                                {statusCards.map((card) => {
+                                    const Icon = card.icon;
+                                    const isActive = status === card.value;
 
-                                return (
-                                    <button
-                                        key={card.value}
-                                        type="button"
-                                        onClick={() => setStatus(card.value)}
-                                        className={`relative p-4 rounded-2xl border-2 transition-all duration-200 ${isActive
-                                                ? `${card.activeColor} ${card.glowColor} shadow-lg scale-[1.02]`
-                                                : `${card.bgColor} ${card.borderColor} hover:scale-[1.01]`
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-14 h-14 rounded-xl ${card.bgColor} flex items-center justify-center ${isActive ? 'scale-110' : ''
-                                                } transition-transform`}>
-                                                <Icon className={`w-7 h-7 ${card.iconColor}`} />
+                                    return (
+                                        <button
+                                            key={card.value}
+                                            type="button"
+                                            onClick={() => setStatus(card.value)}
+                                            className={`group relative p-4 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 text-left ${isActive ? card.activeStyles : card.inactiveStyles
+                                                }`}
+                                        >
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all bg-slate-950/50 ${isActive ? 'scale-110 shadow-inner' : 'group-hover:scale-105'
+                                                }`}>
+                                                <Icon className={`w-6 h-6 ${isActive ? card.iconColor : 'text-slate-500'}`} />
                                             </div>
-                                            <div className="flex-1 text-left">
-                                                <div className={`font-bold text-lg ${isActive ? 'text-white' : 'text-slate-300'}`}>
+                                            <div className="flex-1">
+                                                <h4 className={`font-bold transition-colors ${isActive ? 'text-white' : 'text-slate-400'}`}>
                                                     {card.label}
-                                                </div>
-                                                <div className={`text-sm ${isActive ? 'text-slate-300' : 'text-slate-500'}`}>
+                                                </h4>
+                                                <p className="text-xs text-slate-500 font-medium">
                                                     {card.description}
-                                                </div>
+                                                </p>
                                             </div>
                                             {isActive && (
-                                                <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center">
-                                                    <div className={`w-3 h-3 rounded-full ${card.iconColor.replace('text-', 'bg-')}`} />
+                                                <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-900/40">
+                                                    <CheckCircle className="w-4 h-4 text-white" />
                                                 </div>
                                             )}
-                                        </div>
-                                    </button>
-                                );
-                            })}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Error */}
-                    {error && (
-                        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-shake">
-                            <p className="text-sm text-red-400">{error}</p>
-                        </div>
-                    )}
+                        {error && (
+                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 animate-shake">
+                                <p className="text-sm font-medium text-red-100">{error}</p>
+                            </div>
+                        )}
+                    </form>
+                </div>
 
-                    {/* Actions */}
-                    <div className="flex gap-3 pt-2">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 h-12 btn-secondary"
-                            disabled={saving}
-                        >
-                            İptal
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex-1 h-12 btn-primary flex items-center justify-center gap-2"
-                            disabled={saving}
-                        >
-                            {saving ? (
-                                <>
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    Kaydediliyor...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="w-5 h-5" />
-                                    Kaydet
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </form>
+                {/* Footer */}
+                <div className="p-6 border-t border-white/5 bg-slate-900/50 flex gap-4">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        fullWidth
+                        onClick={onClose}
+                        disabled={saving}
+                    >
+                        İptal
+                    </Button>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        fullWidth
+                        loading={saving}
+                        onClick={handleSubmit}
+                        icon={Save}
+                    >
+                        Yoklamayı Kaydet
+                    </Button>
+                </div>
             </div>
         </div>
     );
