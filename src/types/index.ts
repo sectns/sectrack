@@ -56,17 +56,6 @@ export interface Course {
     updated_at: string;
 }
 
-export interface ScheduleSlot {
-    id: string;
-    course_id: string;
-    day_of_week: DayOfWeek;
-    start_time: string; // HH:MM format
-    end_time: string;   // HH:MM format
-    type: CourseType;
-    created_at: string;
-    updated_at: string;
-}
-
 export interface AttendanceLog {
     id: string;
     course_id: string; // Direct link to course (no more slots)
@@ -80,22 +69,10 @@ export interface AttendanceLog {
     updated_at: string;
 }
 
-
 // ============================================================================
 // EXTENDED TYPES WITH RELATIONS
 // ============================================================================
 
-export interface ScheduleSlotWithCourse extends ScheduleSlot {
-    course: Course;
-}
-
-export interface AttendanceLogWithSlot extends AttendanceLog {
-    slot: ScheduleSlotWithCourse;
-}
-
-// ============================================================================
-// CALCULATION TYPES
-// ============================================================================
 
 export interface AttendanceCalculation {
     // Theory (T)
@@ -139,13 +116,7 @@ export interface CourseFormData {
     color_code?: string;
 }
 
-export interface ScheduleSlotFormData {
-    course_id: string;
-    day_of_week: DayOfWeek;
-    start_time: string;
-    end_time: string;
-    type: CourseType;
-}
+
 
 export interface AttendanceUpdateData {
     status: AttendanceStatus;
@@ -156,20 +127,7 @@ export interface AttendanceUpdateData {
 // UI TYPES
 // ============================================================================
 
-export interface DaySchedule {
-    date: string; // ISO date string
-    day_name: string; // Turkish day name
-    slots: Array<{
-        slot: ScheduleSlotWithCourse;
-        attendance?: AttendanceLog;
-    }>;
-}
 
-export interface WeekSchedule {
-    week_start: string; // ISO date string
-    week_end: string;
-    days: DaySchedule[];
-}
 
 // ============================================================================
 // UTILITY TYPES

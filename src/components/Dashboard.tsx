@@ -10,7 +10,6 @@ import SemesterSettingsModal from './SemesterSettingsModal';
 import MobileBottomNav from './MobileBottomNav';
 import { CourseFormData, AttendanceStatus, Profile, CourseType } from '@/types';
 import { format } from 'date-fns';
-import { tr } from 'date-fns/locale';
 
 
 interface DashboardProps {
@@ -357,7 +356,7 @@ export default function Dashboard({ user }: DashboardProps) {
                                                 Dönem Başlamadı
                                             </p>
                                             <p className="text-xs text-blue-400/70">
-                                                Kalan: {semester.daysUntilStart} gün ({format(new Date(profile.semester_start), 'dd MMMM yyyy', { locale: tr })})
+                                                Kalan: {semester.daysUntilStart} gün ({format(new Date(profile.semester_start), 'dd MMMM yyyy')})
                                             </p>
                                         </div>
                                     </div>
